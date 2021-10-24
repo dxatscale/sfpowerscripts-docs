@@ -12,9 +12,8 @@ skipIfAlreadyInstalled: true
 baselineOrg: "myorg"
 promotePackagesBeforeDeploymentToOrg:"SIT"
 artifacts:
-  mypackageA: alpha # Supports NPM tags
-  mypackageB: LATEST_TAG # Substituted with version from latest git tag at runtime
-  mypackageC: 1.2.3-5 # Provide the exact version to download
+  mypackageA: LATEST_GIT_TAG # Substituted with version from latest git tag at runtime
+  mypackageB: 1.2.3-5 # Provide the exact version to download
 packageDependencies:
   Marketing Cloud: 04t0H000000xVrw
 changelog:
@@ -29,7 +28,7 @@ changelog:
 | ------------------------------------ | -------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | release                              | Yes      | string  | Name of the release                                                                                                                                            |
 | skipIfAlreadyInstalled               | No       | boolean | Skip installation of artifact if it's already installed in target org                                                                                          |
-| baselineOrg                          | No       | string  | The org used to decide whether or not to skip installation of an artifact.  Defaults to the target org when not provided.                                      |
+| baselineOrg                          | No       | string  | The org used to decide whether or not to skip installation of an artifact. Defaults to the target org when not provided.                                       |
 | artifacts                            | Yes      | Object  | Map of artifacts to deploy and their corresponding version                                                                                                     |
 | promotePackagesBeforeDeploymentToOrg | No       | string  | Promote packages before they are installed into an org that matches alias of the org                                                                           |
 | packageDependencies                  | No       | Object  | Packages dependencies (e.g. managed packages) to install as part of the release. Provide the 04t subscriber package version Id.                                |
@@ -44,7 +43,7 @@ changelog:
 The `orchestrator:release` command provides a simplified method of fetching artifacts from an artifact repository using the release definition file which contains the name of the artifacts that you want to download, and a mapping to the version to download. If fetching from a **NPM registry**, the command will handle everything else for you. However, for universal artifacts there is no uniform method for downloading artifacts from a repository, so you will need to provide a shell script that calls the relevant API.
 
 {% hint style="info" %}
-The`LATEST_TAG` keyword is only supported if the current working directory is pointing to the project directory, and if at least one git tag exists for the package.
+The`LATEST_TAG/LATEST_GIT_TAG` keyword is only supported if the current working directory is pointing to the project directory, and if at least one git tag exists for the package.
 {% endhint %}
 
 ### Fetching universal artifacts
@@ -55,7 +54,7 @@ There are multiple parameters available in the shell script. Pass these paramete
 
 1. Artifact name
 2. Artifact version
-3. Directory to download artifacts 
+3. Directory to download artifacts
 
 **Eg.** **Fetching from Azure Artifacts using the Az CLI on Linux**
 

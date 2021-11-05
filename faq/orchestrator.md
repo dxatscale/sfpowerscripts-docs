@@ -14,20 +14,15 @@ description: The heart of sfpowerscripts
 
 To understand the orchestrator, let's look at a typical CI/CD pipeline for a package-based development in a program that has multiple environments. For brevity, prepare and validate states are not discussed.
 
-![Flow Diagram](../.gitbook/assets/flowdiagram_revised.png)
+![Flow Diagram](../.gitbook/assets/flowdiagram\_revised.png)
 
+Let's dive into the pipeline depicted above, there key stages we wil be
 
-
-Let's dive into the pipeline depicted above, there key stages we wil be 
-
-*   **CI Pipeline**: A pipeline that gets triggered on every merge to the trunk. During this process, the following stages happen in sequence.
-
-    * [quickbuild](../commands/build-and-quickbuild.md) a set of changed packages (packages without validating for dependency or code coverage) 
-    * [deploy](../commands/deploy.md) to a Development Sandbox.  This process ensures the upgrade process of a package is accurate and you could also do a quick round of validation of your packages coming in from a scratch org.
-    * Once deploy is successful, the pipeline proceed to [build](../commands/build-and-quickbuild.md) the set of changed packages (but this time with dependency validation and code coverage check). The same job could then [publish](../commands/publish.md) these validated packages to an artifact repository for deployment into higher environments for further testing.
-
-
-* **CD Pipeline**:  A Continuous Delivery Pipeline that gets triggered manually or automatically (every day on a scheduled time interval) deploying a set of the latest validated packages to a series of environment. The sequence of stages include
+* **CI Pipeline**: A pipeline that gets triggered on every merge to the trunk. During this process, the following stages happen in sequence.
+  * [quickbuild](../commands/build-and-quickbuild.md) a set of changed packages (packages without validating for dependency or code coverage)
+  * [deploy](../commands/deploy.md) to a Development Sandbox. This process ensures the upgrade process of a package is accurate and you could also do a quick round of validation of your packages coming in from a scratch org.
+  * Once deploy is successful, the pipeline proceed to [build](../commands/build-and-quickbuild.md) the set of changed packages (but this time with dependency validation and code coverage check). The same job could then [publish](../commands/publish.md) these validated packages to an artifact repository for deployment into higher environments for further testing.
+* **CD Pipeline**: A Continuous Delivery Pipeline that gets triggered manually or automatically (every day on a scheduled time interval) deploying a set of the latest validated packages to a series of environment. The sequence of stages include
   * Fetch the Artifacts from the artifact repository using the provided release definition
   * Deploy the set of packages say to System Testing environment
   * Upon successful testing, the same set of packages progress to the System Integration Test environment and so forth
@@ -38,13 +33,12 @@ Take a note of each stage in the pipeline above and the key functionality requir
 
 ### Orchestrator commands
 
-1. [**prepare**](https://dxatscale.gitbook.io/sfpowerscripts/faq/orchestrator/prepare) **(sfdx sfpowerscripts:orchestrator:prepare)**:  Prepare command helps you to build a pool of prebuilt scratch orgs which include managed packages as well as packages in your repository. This process allows you to considerably cut down time in re-creating a scratch org during a pull request validation process when a scratch org is used as Just-in-time CI environment. In simple terms, it reduces time taken in building a scratch org to validate your changes in an incoming pull request. This command also have an option to pull artifacts from your artifact repository, so that say you can prebuild your validation orgs, say from validated set of packages.   
-2. [**validate**](../commands/validate.md) **(sfdx sfpowerscripts:orchestrator:validate)**: This command goes in pair with the prepare command. It fetches a scratch org from the pool already pre prepared (by the prepare command) and deploys/unit tests the changed packages.    
-3. [**build**](../commands/build-and-quickbuild.md) **(sfdx sfpowerscripts:orchestrator:build/quickbuild)** : This command builds all the packages in parallel wherever possible by understanding your manifest and dependency tree. Goodbye to the sequential builds, where you fail in the n-1th package and have to wait for the next hour. This command brings massive savings to your build (package creation) time. Also use the [**quickbuild**](../commands/build-and-quickbuild.md) variant, which builds unlocked package without dependency check in intermittent stages for faster feedback.   
-4. [**deploy**](../commands/deploy.md) **(sfdx sfpowerscripts:orchestrator:deploy)**: So you have built all the packages, now this command takes care of deploying it, by reading the order of installation as you have specified in your sfdx-project.json. Installs it one by one, deciding to trigger tests etc. and provide you with the logs if anything fails   
-5. [**promote**](orchestrator.md) **(sfdx sfpowerscripts:orchestrator:promote)** : Promote enables the packages to be deployable to production. This explicit stage prevents incorrectly tested packages to reach production    
-6. [**publish**](../commands/publish.md) **(sfdx sfpowerscripts:orchestrator:publish)** :  Publish lets you publish the built artifacts into an artifact registry during publish stages of your pipeline.
-7. [**release**](../commands/release.md) (**sfdx sfpowerscripts:orchestrator:release**) : Release commands orchestrate fetching of artifacts from an artifact repository, deploying to an environment including any external dependencies and generating changelog all driven by a release definition file.
+1. [**prepare**](https://dxatscale.gitbook.io/sfpowerscripts/faq/orchestrator/prepare) **(sfdx sfpowerscripts:orchestrator:prepare)**: Prepare command helps you to build a pool of prebuilt scratch orgs which include managed packages as well as packages in your repository. This process allows you to considerably cut down time in re-creating a scratch org during a pull request validation process when a scratch org is used as Just-in-time CI environment. In simple terms, it reduces time taken in building a scratch org to validate your changes in an incoming pull request. This command also have an option to pull artifacts from your artifact repository, so that say you can prebuild your validation orgs, say from validated set of packages.
+2. [**validate**](../commands/validate.md) **(sfdx sfpowerscripts:orchestrator:validate)**: This command goes in pair with the prepare command. It fetches a scratch org from the pool already pre prepared (by the prepare command) and deploys/unit tests the changed packages.
+3. [**build**](../commands/build-and-quickbuild.md) **(sfdx sfpowerscripts:orchestrator:build/quickbuild)** : This command builds all the packages in parallel wherever possible by understanding your manifest and dependency tree. Goodbye to the sequential builds, where you fail in the n-1th package and have to wait for the next hour. This command brings massive savings to your build (package creation) time. Also use the [**quickbuild**](../commands/build-and-quickbuild.md) variant, which builds unlocked package without dependency check in intermittent stages for faster feedback.
+4. [**deploy**](../commands/deploy.md) **(sfdx sfpowerscripts:orchestrator:deploy)**: So you have built all the packages, now this command takes care of deploying it, by reading the order of installation as you have specified in your sfdx-project.json. Installs it one by one, deciding to trigger tests etc. and provide you with the logs if anything fails
+5. [**publish**](../commands/publish.md) **(sfdx sfpowerscripts:orchestrator:publish)** : Publish lets you publish the built artifacts into an artifact registry during publish stages of your pipeline.
+6. [**release**](../commands/release.md) (**sfdx sfpowerscripts:orchestrator:release**) : Release commands orchestrate fetching of artifacts from an artifact repository, deploying to an environment including any external dependencies and generating changelog all driven by a release definition file.
 
 ### Controlling Aspects of the Orchestrator
 

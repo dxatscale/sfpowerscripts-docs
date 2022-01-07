@@ -31,10 +31,10 @@ To retrieve the SFDX Auth URL:
 sfdx force:auth:web:login -r <your-domain-url>
 ```
 
-1. Run the `force:org:display` command with the `--verbose` and `–json` flags
+1. Run the `force:org:display` command with the `--verbose` and `–-json` flags
 
 ```
- sfdx force:org:display -u CIServiceUser –verbose –json
+ sfdx force:org:display -u CIServiceUser -–verbose -–json
 ```
 
 1. Copy the value of the SFDX Auth URL field into CICD secrets
